@@ -5,11 +5,7 @@ http://www.cs.waikato.ac.nz/ml/weka/svn.html
 
 ####Example
 
-public class MainActivity extends AppCompatActivity {
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
     InputStream is = getResources().openRawResource(R.raw.ionosphere);
     BufferedReader datafile = new BufferedReader(new InputStreamReader(is));
     try {
@@ -26,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
       m_Evaluation.crossValidateModel(m_Classifier, localInstances, 10,
           m_Training.getRandomNumberGenerator(1L));
-          
-          
       Log.e("Detail", m_Evaluation.toClassDetailsString());
       Log.e("Summary", m_Evaluation.toSummaryString());
 
@@ -43,7 +37,5 @@ public class MainActivity extends AppCompatActivity {
 
       e.printStackTrace();
     }
-  }
-}
 
 
