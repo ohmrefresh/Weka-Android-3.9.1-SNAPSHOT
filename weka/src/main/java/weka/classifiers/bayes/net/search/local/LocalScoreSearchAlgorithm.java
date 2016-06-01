@@ -240,30 +240,29 @@ public class LocalScoreSearchAlgorithm extends SearchAlgorithm {
     }
 
     return fLogScore;
-  } // CalcNodeScore  /**
+  } // CalcNodeScore
 
-  *
-  buildStructure determines
-  the network
-  structure/
-  graph of
-  the network
-  with
-  *
-  the K2
-  algorithm,
-  restricted by
-  its initial
-
-  structure(which can be an
-      *empty graph, or a Naive Bayes graph.
-      *
-      *@param bayesNet the network
-      *@param instances the data to use
-      *@throws Exception if something goes wrong
-      */
-      @Override public void buildStructure(BayesNet bayesNet, Instances instances)
-      throws Exception {
+  /**
+   * buildStructure determines
+   * the network
+   * structure/
+   * graph of
+   * the network
+   * with
+   *
+   * the K2
+   * algorithm,
+   * restricted by
+   * its initial
+   *
+   * structure(which can be an
+   * empty graph, or a Naive Bayes graph.
+   *
+   * @param bayesNet the network
+   * @param instances the data to use
+   * @throws Exception if something goes wrong
+   */
+  @Override public void buildStructure(BayesNet bayesNet, Instances instances) throws Exception {
     m_BayesNet = bayesNet;
     super.buildStructure(bayesNet, instances);
   } // buildStructure
@@ -599,9 +598,7 @@ public class LocalScoreSearchAlgorithm extends SearchAlgorithm {
         + "based search algorithms).";
   } // globalInfo  /**
 
-  *
-      *@return
-      */
+
 
   @Override public boolean getMarkovBlanketClassifier() {
     return super.getMarkovBlanketClassifier();

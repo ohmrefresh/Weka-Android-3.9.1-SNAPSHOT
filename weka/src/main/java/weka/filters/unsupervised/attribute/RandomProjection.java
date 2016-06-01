@@ -157,18 +157,7 @@ public class RandomProjection extends Filter
   protected boolean m_OutputFormatDefined = false;
   /** The NominalToBinary filter applied to the data before this filter */
   protected Filter m_ntob; // = new  /**
-  *
-  Returns an
-  enumeration describing
-  the available
-  options.
-  *
-      *@return
-  an enumeration
-  of all
-  the available
-  options.
-  */
+
 
   @Override public Enumeration<Option> listOptions() {
 

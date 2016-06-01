@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
+
 import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.net.ParentSet;
 import weka.core.Instances;
@@ -38,57 +39,57 @@ import weka.core.Utils;
  * return the best structure of the various runs.
  * <p/>
  * <!-- globalinfo-end -->
- *
+ * 
  * <!-- options-start --> Valid options are:
  * <p/>
- *
+ * 
  * <pre>
  * -U &lt;integer&gt;
  *  Number of runs
  * </pre>
- *
+ * 
  * <pre>
  * -A &lt;seed&gt;
  *  Random number seed
  * </pre>
- *
+ * 
  * <pre>
  * -P &lt;nr of parents&gt;
  *  Maximum number of parents
  * </pre>
- *
+ * 
  * <pre>
  * -R
  *  Use arc reversal operation.
  *  (default false)
  * </pre>
- *
+ * 
  * <pre>
  * -N
  *  Initial structure is empty (instead of Naive Bayes)
  * </pre>
- *
+ * 
  * <pre>
  * -mbc
- *  Applies a Markov Blanket correction to the network structure,
- *  after a network structure is learned. This ensures that all
- *  nodes in the network are part of the Markov blanket of the
+ *  Applies a Markov Blanket correction to the network structure, 
+ *  after a network structure is learned. This ensures that all 
+ *  nodes in the network are part of the Markov blanket of the 
  *  classifier node.
  * </pre>
- *
+ * 
  * <pre>
  * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
  *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
  * </pre>
- *
+ * 
  * <pre>
  * -Q
  *  Use probabilistic or 0/1 scoring.
  *  (default probabilistic scoring)
  * </pre>
- *
+ * 
  * <!-- options-end -->
- *
+ * 
  * @author Remco Bouckaert (rrb@xm.co.nz)
  * @version $Revision: 10154 $
  */
@@ -107,12 +108,14 @@ public class RepeatedHillClimber extends HillClimber {
   /**
    * search determines the network structure/graph of the network with the
    * repeated hill climbing.
-   *
+   * 
    * @param bayesNet the network to use
    * @param instances the data to use
    * @throws Exception if something goes wrong
    **/
-  @Override protected void search(BayesNet bayesNet, Instances instances) throws Exception {
+  @Override
+  protected void search(BayesNet bayesNet, Instances instances)
+    throws Exception {
     m_random = new Random(getSeed());
     // keeps track of score pf best structure found so far
     double fBestScore;
@@ -154,30 +157,7 @@ public class RepeatedHillClimber extends HillClimber {
   } // search
 
   /**
-   * Returns the random seed
-   *
-   * @return random number seed
-   */
-  public int getSeed() {
-    return m_nSeed;
-  } // getSeed
-
-  /**
-   * copyParentSets copies parent sets of source to dest BayesNet
-   *
-   * @param dest destination network
-   * @param source source network
-   */
-  void copyParentSets(BayesNet dest, BayesNet source) {
-    int nNodes = source.getNrOfNodes();
-    // clear parent set first
-    for (int iNode = 0; iNode < nNodes; iNode++) {
-      dest.getParentSet(iNode).copy(source.getParentSet(iNode));
-    }
-  } // CopyParentSets
-
-  /**
-   *
+   * 
    * @param bayesNet
    * @param instances
    */
@@ -208,62 +188,76 @@ public class RepeatedHillClimber extends HillClimber {
     for (int iAttempt = 0; iAttempt < nNrOfAttempts; iAttempt++) {
       int iTail = m_random.nextInt(nNodes);
       int iHead = m_random.nextInt(nNodes);
-      if (bayesNet.getParentSet(iHead).getNrOfParents() < getMaxNrOfParents() && addArcMakesSense(
-          bayesNet, instances, iHead, iTail)) {
+      if (bayesNet.getParentSet(iHead).getNrOfParents() < getMaxNrOfParents()
+        && addArcMakesSense(bayesNet, instances, iHead, iTail)) {
         bayesNet.getParentSet(iHead).addParent(iTail, instances);
       }
     }
-  } // generateRandomNet  /**
+  } // generateRandomNet
 
-  *
-  Returns the
-  number of
-  runs
-  *
-      *@return
-  number of
-  runs
-  */
+  /**
+   * copyParentSets copies parent sets of source to dest BayesNet
+   * 
+   * @param dest destination network
+   * @param source source network
+   */
+  void copyParentSets(BayesNet dest, BayesNet source) {
+    int nNodes = source.getNrOfNodes();
+    // clear parent set first
+    for (int iNode = 0; iNode < nNodes; iNode++) {
+      dest.getParentSet(iNode).copy(source.getParentSet(iNode));
+    }
+  } // CopyParentSets
 
+  /**
+   * Returns the number of runs
+   * 
+   * @return number of runs
+   */
   public int getRuns() {
     return m_nRuns;
   } // getRuns
 
   /**
-   * Sets the random number seed
-   *
-   * @param nSeed The number of the seed to set
+   * Sets the number of runs
+   * 
+   * @param nRuns The number of runs to set
    */
-  public void setSeed(int nSeed) {
-    m_nSeed = nSeed;
-  } // setSeed  /**
-
-  *
-  Sets the
-  number of
-  runs
-  *
-      *
-  @param nRuns The
-  number of
-  runs to
-  set
-  */
-
   public void setRuns(int nRuns) {
     m_nRuns = nRuns;
   } // setRuns
 
   /**
+   * Returns the random seed
+   * 
+   * @return random number seed
+   */
+  public int getSeed() {
+    return m_nSeed;
+  } // getSeed
+
+  /**
+   * Sets the random number seed
+   * 
+   * @param nSeed The number of the seed to set
+   */
+  public void setSeed(int nSeed) {
+    m_nSeed = nSeed;
+  } // setSeed
+
+  /**
    * Returns an enumeration describing the available options.
-   *
+   * 
    * @return an enumeration of all the available options.
    */
-  @Override public Enumeration<Option> listOptions() {
+  @Override
+  public Enumeration<Option> listOptions() {
     Vector<Option> newVector = new Vector<Option>(4);
 
-    newVector.addElement(new Option("\tNumber of runs", "U", 1, "-U <integer>"));
-    newVector.addElement(new Option("\tRandom number seed", "A", 1, "-A <seed>"));
+    newVector
+      .addElement(new Option("\tNumber of runs", "U", 1, "-U <integer>"));
+    newVector
+      .addElement(new Option("\tRandom number seed", "A", 1, "-A <seed>"));
 
     newVector.addAll(Collections.list(super.listOptions()));
 
@@ -271,78 +265,64 @@ public class RepeatedHillClimber extends HillClimber {
   } // listOptions
 
   /**
-   * @return a string to describe the Runs option.
-   */
-  public String runsTipText() {
-    return "Sets the number of times hill climbing is performed.";
-  } // runsTipText
-
-  /**
-   * @return a string to describe the Seed option.
-   */
-  public String seedTipText() {
-    return "Initialization value for random number generator."
-        + " Setting the seed allows replicability of experiments.";
-  } // seedTipText
-
-  /**
    * Parses a given list of options.
    * <p/>
-   *
+   * 
    * <!-- options-start --> Valid options are:
    * <p/>
-   *
+   * 
    * <pre>
    * -U &lt;integer&gt;
    *  Number of runs
    * </pre>
-   *
+   * 
    * <pre>
    * -A &lt;seed&gt;
    *  Random number seed
    * </pre>
-   *
+   * 
    * <pre>
    * -P &lt;nr of parents&gt;
    *  Maximum number of parents
    * </pre>
-   *
+   * 
    * <pre>
    * -R
    *  Use arc reversal operation.
    *  (default false)
    * </pre>
-   *
+   * 
    * <pre>
    * -N
    *  Initial structure is empty (instead of Naive Bayes)
    * </pre>
-   *
+   * 
    * <pre>
    * -mbc
-   *  Applies a Markov Blanket correction to the network structure,
-   *  after a network structure is learned. This ensures that all
-   *  nodes in the network are part of the Markov blanket of the
+   *  Applies a Markov Blanket correction to the network structure, 
+   *  after a network structure is learned. This ensures that all 
+   *  nodes in the network are part of the Markov blanket of the 
    *  classifier node.
    * </pre>
-   *
+   * 
    * <pre>
    * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
    *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
    * </pre>
-   *
+   * 
    * <pre>
    * -Q
    *  Use probabilistic or 0/1 scoring.
    *  (default probabilistic scoring)
    * </pre>
-   *
+   * 
    * <!-- options-end -->
-   *
+   * 
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
-  @Override public void setOptions(String[] options) throws Exception {
+  @Override
+  public void setOptions(String[] options) throws Exception {
     String sRuns = Utils.getOption('U', options);
     if (sRuns.length() != 0) {
       setRuns(Integer.parseInt(sRuns));
@@ -358,10 +338,11 @@ public class RepeatedHillClimber extends HillClimber {
 
   /**
    * Gets the current settings of the search algorithm.
-   *
+   * 
    * @return an array of strings suitable for passing to setOptions
    */
-  @Override public String[] getOptions() {
+  @Override
+  public String[] getOptions() {
 
     Vector<String> options = new Vector<String>();
 
@@ -378,21 +359,38 @@ public class RepeatedHillClimber extends HillClimber {
 
   /**
    * This will return a string describing the classifier.
-   *
+   * 
    * @return The string.
    */
-  @Override public String globalInfo() {
+  @Override
+  public String globalInfo() {
     return "This Bayes Network learning algorithm repeatedly uses hill climbing starting "
-        + "with a randomly generated network structure and return the best structure of the "
-        + "various runs.";
+      + "with a randomly generated network structure and return the best structure of the "
+      + "various runs.";
   } // globalInfo
 
   /**
+   * @return a string to describe the Runs option.
+   */
+  public String runsTipText() {
+    return "Sets the number of times hill climbing is performed.";
+  } // runsTipText
+
+  /**
+   * @return a string to describe the Seed option.
+   */
+  public String seedTipText() {
+    return "Initialization value for random number generator."
+      + " Setting the seed allows replicability of experiments.";
+  } // seedTipText
+
+  /**
    * Returns the revision string.
-   *
+   * 
    * @return the revision
    */
-  @Override public String getRevision() {
+  @Override
+  public String getRevision() {
     return RevisionUtils.extract("$Revision: 10154 $");
   }
 }

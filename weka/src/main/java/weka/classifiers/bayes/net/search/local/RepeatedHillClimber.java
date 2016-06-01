@@ -207,12 +207,12 @@ public class RepeatedHillClimber extends HillClimber {
         bayesNet.getParentSet(iHead).addParent(iTail, instances);
       }
     }
-  } // generateRandomNet  /**
+  } // generateRandomNet
 
-  *@return
-  number of
-  runs
-  */
+  /**
+   * @return number of
+   * runs
+   */
 
   public int getRuns() {
     return m_nRuns;
@@ -225,19 +225,13 @@ public class RepeatedHillClimber extends HillClimber {
    */
   public void setSeed(int nSeed) {
     m_nSeed = nSeed;
-  } // setSeed  /**
+  } // setSeed
 
-  *
-  Sets the
-  number of
-  runs
-  *
-      *
-  @param nRuns The
-  number of
-  runs to
-  set
-  */
+  /**
+   * Sets the number of  runs
+   *
+   * @param nRuns The number of runs to set
+   */
 
   public void setRuns(int nRuns) {
     m_nRuns = nRuns;

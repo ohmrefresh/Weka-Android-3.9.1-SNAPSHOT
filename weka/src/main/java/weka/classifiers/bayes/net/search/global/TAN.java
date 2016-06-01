@@ -22,6 +22,7 @@
 package weka.classifiers.bayes.net.search.global;
 
 import java.util.Enumeration;
+
 import weka.classifiers.bayes.BayesNet;
 import weka.core.Instances;
 import weka.core.Option;
@@ -42,9 +43,9 @@ import weka.core.TechnicalInformationHandler;
  * Machine Learning. 29(2-3):131-163.
  * <p/>
  * <!-- globalinfo-end -->
- *
+ * 
  * <!-- technical-bibtex-start --> BibTeX:
- *
+ * 
  * <pre>
  * &#64;article{Friedman1997,
  *    author = {N. Friedman and D. Geiger and M. Goldszmidt},
@@ -58,46 +59,75 @@ import weka.core.TechnicalInformationHandler;
  * </pre>
  * <p/>
  * <!-- technical-bibtex-end -->
- *
+ * 
  * <!-- options-start --> Valid options are:
  * <p/>
- *
+ * 
  * <pre>
  * -mbc
- *  Applies a Markov Blanket correction to the network structure,
- *  after a network structure is learned. This ensures that all
- *  nodes in the network are part of the Markov blanket of the
+ *  Applies a Markov Blanket correction to the network structure, 
+ *  after a network structure is learned. This ensures that all 
+ *  nodes in the network are part of the Markov blanket of the 
  *  classifier node.
  * </pre>
- *
+ * 
  * <pre>
  * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
  *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
  * </pre>
- *
+ * 
  * <pre>
  * -Q
  *  Use probabilistic or 0/1 scoring.
  *  (default probabilistic scoring)
  * </pre>
- *
+ * 
  * <!-- options-end -->
- *
+ * 
  * @author Remco Bouckaert
  * @version $Revision: 10154 $
  */
-public class TAN extends GlobalScoreSearchAlgorithm implements TechnicalInformationHandler {
+public class TAN extends GlobalScoreSearchAlgorithm implements
+  TechnicalInformationHandler {
 
   /** for serialization */
   static final long serialVersionUID = 1715277053980895298L;
 
   /**
+   * Returns an instance of a TechnicalInformation object, containing detailed
+   * information about the technical background of this class, e.g., paper
+   * reference or book this class is based on.
+   * 
+   * @return the technical information about this class
+   */
+  @Override
+  public TechnicalInformation getTechnicalInformation() {
+    TechnicalInformation result;
+
+    result = new TechnicalInformation(Type.ARTICLE);
+    result
+      .setValue(Field.AUTHOR, "N. Friedman and D. Geiger and M. Goldszmidt");
+    result.setValue(Field.YEAR, "1997");
+    result.setValue(Field.TITLE, "Bayesian network classifiers");
+    result.setValue(Field.JOURNAL, "Machine Learning");
+    result.setValue(Field.VOLUME, "29");
+    result.setValue(Field.NUMBER, "2-3");
+    result.setValue(Field.PAGES, "131-163");
+
+    return result;
+  }
+
+  /**
    * buildStructure determines the network structure/graph of the network using
    * the maximimum weight spanning tree algorithm of Chow and Liu
-   *
+   * 
+   * @param bayesNet
+   * @param instances
    * @throws Exception if something goes wrong
    */
-  @Override public void buildStructure(BayesNet bayesNet, Instances instances) throws Exception {
+  @Override
+  public void buildStructure(BayesNet bayesNet, Instances instances)
+    throws Exception {
     m_BayesNet = bayesNet;
 
     m_bInitAsNaiveBayes = true;
@@ -146,8 +176,9 @@ public class TAN extends GlobalScoreSearchAlgorithm implements TechnicalInformat
       for (iLinkNode1 = 0; iLinkNode1 < nNrOfAtts; iLinkNode1++) {
         if (iLinkNode1 != nClassNode) {
           for (int iLinkNode2 = 0; iLinkNode2 < nNrOfAtts; iLinkNode2++) {
-            if ((iLinkNode1 != iLinkNode2) && (iLinkNode2 != nClassNode) && (linked[iLinkNode1]
-                || linked[iLinkNode2]) && (!linked[iLinkNode1] || !linked[iLinkNode2])) {
+            if ((iLinkNode1 != iLinkNode2) && (iLinkNode2 != nClassNode)
+              && (linked[iLinkNode1] || linked[iLinkNode2])
+              && (!linked[iLinkNode1] || !linked[iLinkNode2])) {
               double fScore = calcScoreWithExtraParent(iLinkNode1, iLinkNode2);
 
               if ((nBestLinkNode1 == -1) || (fScore > fBestDeltaScore)) {
@@ -183,102 +214,86 @@ public class TAN extends GlobalScoreSearchAlgorithm implements TechnicalInformat
         hasParent[link2[iLink]] = true;
       }
     }
+
   } // buildStructure
 
   /**
    * Returns an enumeration describing the available options.
-   *
+   * 
    * @return an enumeration of all the available options.
    */
-  @Override public Enumeration<Option> listOptions() {
+  @Override
+  public Enumeration<Option> listOptions() {
     return super.listOptions();
   } // listOption
 
   /**
-   * This will return a string describing the classifier.
-   *
-   * @return The string.
-   */
-  @Override public String globalInfo() {
-    return "This Bayes Network learning algorithm determines the maximum weight spanning tree "
-        + "and returns a Naive Bayes network augmented with a tree.\n\n"
-        + "For more information see:\n\n"
-        + getTechnicalInformation().toString();
-  } // globalInfo
-
-  /**
-   * Returns an instance of a TechnicalInformation object, containing detailed
-   * information about the technical background of this class, e.g., paper
-   * reference or book this class is based on.
-   *
-   * @return the technical information about this class
-   */
-  @Override public TechnicalInformation getTechnicalInformation() {
-    TechnicalInformation result;
-
-    result = new TechnicalInformation(Type.ARTICLE);
-    result.setValue(Field.AUTHOR, "N. Friedman and D. Geiger and M. Goldszmidt");
-    result.setValue(Field.YEAR, "1997");
-    result.setValue(Field.TITLE, "Bayesian network classifiers");
-    result.setValue(Field.JOURNAL, "Machine Learning");
-    result.setValue(Field.VOLUME, "29");
-    result.setValue(Field.NUMBER, "2-3");
-    result.setValue(Field.PAGES, "131-163");
-
-    return result;
-  }
-
-  /**
    * Parses a given list of options.
    * <p/>
-   *
+   * 
    * <!-- options-start --> Valid options are:
    * <p/>
-   *
+   * 
    * <pre>
    * -mbc
-   *  Applies a Markov Blanket correction to the network structure,
-   *  after a network structure is learned. This ensures that all
-   *  nodes in the network are part of the Markov blanket of the
+   *  Applies a Markov Blanket correction to the network structure, 
+   *  after a network structure is learned. This ensures that all 
+   *  nodes in the network are part of the Markov blanket of the 
    *  classifier node.
    * </pre>
-   *
+   * 
    * <pre>
    * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
    *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
    * </pre>
-   *
+   * 
    * <pre>
    * -Q
    *  Use probabilistic or 0/1 scoring.
    *  (default probabilistic scoring)
    * </pre>
-   *
+   * 
    * <!-- options-end -->
-   *
+   * 
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
-  @Override public void setOptions(String[] options) throws Exception {
+  @Override
+  public void setOptions(String[] options) throws Exception {
     super.setOptions(options);
   } // setOptions
 
   /**
    * Gets the current settings of the Classifier.
-   *
+   * 
    * @return an array of strings suitable for passing to setOptions
    */
-  @Override public String[] getOptions() {
+  @Override
+  public String[] getOptions() {
     return super.getOptions();
   } // getOptions
 
   /**
+   * This will return a string describing the classifier.
+   * 
+   * @return The string.
+   */
+  @Override
+  public String globalInfo() {
+    return "This Bayes Network learning algorithm determines the maximum weight spanning tree "
+      + "and returns a Naive Bayes network augmented with a tree.\n\n"
+      + "For more information see:\n\n" + getTechnicalInformation().toString();
+  } // globalInfo
+
+  /**
    * Returns the revision string.
-   *
+   * 
    * @return the revision
    */
-  @Override public String getRevision() {
+  @Override
+  public String getRevision() {
     return RevisionUtils.extract("$Revision: 10154 $");
   }
+
 } // TAN
 

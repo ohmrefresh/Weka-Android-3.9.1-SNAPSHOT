@@ -24,6 +24,7 @@ package weka.classifiers.bayes.net.estimate;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
+
 import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.net.search.local.K2;
 import weka.core.Instance;
@@ -39,22 +40,22 @@ import weka.estimators.Estimator;
  * tables of a Bayes network using Bayes Model Averaging (BMA).
  * <p/>
  * <!-- globalinfo-end -->
- *
+ * 
  * <!-- options-start --> Valid options are:
  * <p/>
- *
+ * 
  * <pre>
  * -k2
  *  Whether to use K2 prior.
  * </pre>
- *
+ * 
  * <pre>
  * -A &lt;alpha&gt;
  *  Initial count (alpha)
  * </pre>
- *
+ * 
  * <!-- options-end -->
- *
+ * 
  * @author Remco Bouckaert (rrb@xm.co.nz)
  * @version $Revision: 10154 $
  */
@@ -68,30 +69,33 @@ public class BMAEstimator extends SimpleEstimator {
 
   /**
    * Returns a string describing this object
-   *
+   * 
    * @return a description of the classifier suitable for displaying in the
-   * explorer/experimenter gui
+   *         explorer/experimenter gui
    */
-  @Override public String globalInfo() {
+  @Override
+  public String globalInfo() {
     return "BMAEstimator estimates conditional probability tables of a Bayes "
-        + "network using Bayes Model Averaging (BMA).";
+      + "network using Bayes Model Averaging (BMA).";
   }
 
   /**
    * estimateCPTs estimates the conditional probability tables for the Bayes Net
    * using the network structure.
-   *
+   * 
    * @param bayesNet the bayes net to use
    * @throws Exception if an error occurs
    */
-  @Override public void estimateCPTs(BayesNet bayesNet) throws Exception {
+  @Override
+  public void estimateCPTs(BayesNet bayesNet) throws Exception {
     initCPTs(bayesNet);
 
     Instances instances = bayesNet.m_Instances;
     // sanity check to see if nodes have not more than one parent
     for (int iAttribute = 0; iAttribute < instances.numAttributes(); iAttribute++) {
       if (bayesNet.getParentSet(iAttribute).getNrOfParents() > 1) {
-        throw new Exception("Cannot handle networks with nodes with more than 1 parent (yet).");
+        throw new Exception(
+          "Cannot handle networks with nodes with more than 1 parent (yet).");
       }
     }
 
@@ -116,43 +120,49 @@ public class BMAEstimator extends SimpleEstimator {
         if (m_bUseK2Prior == true) {
           // use Cooper and Herskovitz's metric
           for (int iAttValue = 0; iAttValue < nAttValues; iAttValue++) {
-            w1 += Statistics.lnGamma(
-                1 + ((DiscreteEstimatorBayes) EmptyNet.m_Distributions[iAttribute][0]).getCount(
-                    iAttValue)) - Statistics.lnGamma(1);
+            w1 += Statistics
+              .lnGamma(1 + ((DiscreteEstimatorBayes) EmptyNet.m_Distributions[iAttribute][0])
+                .getCount(iAttValue))
+              - Statistics.lnGamma(1);
           }
-          w1 += Statistics.lnGamma(nAttValues) - Statistics.lnGamma(
-              nAttValues + instances.numInstances());
+          w1 += Statistics.lnGamma(nAttValues)
+            - Statistics.lnGamma(nAttValues + instances.numInstances());
 
-          for (int iParent = 0;
-              iParent < bayesNet.getParentSet(iAttribute).getCardinalityOfParents(); iParent++) {
+          for (int iParent = 0; iParent < bayesNet.getParentSet(iAttribute)
+            .getCardinalityOfParents(); iParent++) {
             int nTotal = 0;
             for (int iAttValue = 0; iAttValue < nAttValues; iAttValue++) {
-              double nCount =
-                  ((DiscreteEstimatorBayes) NBNet.m_Distributions[iAttribute][iParent]).getCount(
-                      iAttValue);
+              double nCount = ((DiscreteEstimatorBayes) NBNet.m_Distributions[iAttribute][iParent])
+                .getCount(iAttValue);
               w2 += Statistics.lnGamma(1 + nCount) - Statistics.lnGamma(1);
               nTotal += nCount;
             }
-            w2 += Statistics.lnGamma(nAttValues) - Statistics.lnGamma(nAttValues + nTotal);
+            w2 += Statistics.lnGamma(nAttValues)
+              - Statistics.lnGamma(nAttValues + nTotal);
           }
         } else {
           // use BDe metric
           for (int iAttValue = 0; iAttValue < nAttValues; iAttValue++) {
-            w1 += Statistics.lnGamma(1.0 / nAttValues
-                + ((DiscreteEstimatorBayes) EmptyNet.m_Distributions[iAttribute][0]).getCount(
-                iAttValue)) - Statistics.lnGamma(1.0 / nAttValues);
+            w1 += Statistics
+              .lnGamma(1.0
+                / nAttValues
+                + ((DiscreteEstimatorBayes) EmptyNet.m_Distributions[iAttribute][0])
+                  .getCount(iAttValue))
+              - Statistics.lnGamma(1.0 / nAttValues);
           }
-          w1 += Statistics.lnGamma(1) - Statistics.lnGamma(1 + instances.numInstances());
+          w1 += Statistics.lnGamma(1)
+            - Statistics.lnGamma(1 + instances.numInstances());
 
-          int nParentValues = bayesNet.getParentSet(iAttribute).getCardinalityOfParents();
+          int nParentValues = bayesNet.getParentSet(iAttribute)
+            .getCardinalityOfParents();
           for (int iParent = 0; iParent < nParentValues; iParent++) {
             int nTotal = 0;
             for (int iAttValue = 0; iAttValue < nAttValues; iAttValue++) {
-              double nCount =
-                  ((DiscreteEstimatorBayes) NBNet.m_Distributions[iAttribute][iParent]).getCount(
-                      iAttValue);
-              w2 += Statistics.lnGamma(1.0 / (nAttValues * nParentValues) + nCount)
-                  - Statistics.lnGamma(1.0 / (nAttValues * nParentValues));
+              double nCount = ((DiscreteEstimatorBayes) NBNet.m_Distributions[iAttribute][iParent])
+                .getCount(iAttValue);
+              w2 += Statistics.lnGamma(1.0 / (nAttValues * nParentValues)
+                + nCount)
+                - Statistics.lnGamma(1.0 / (nAttValues * nParentValues));
               nTotal += nCount;
             }
             w2 += Statistics.lnGamma(1) - Statistics.lnGamma(1 + nTotal);
@@ -172,12 +182,15 @@ public class BMAEstimator extends SimpleEstimator {
           w1 = Math.exp(w1) / (1 + Math.exp(w1));
         }
 
-        for (int iParent = 0; iParent < bayesNet.getParentSet(iAttribute).getCardinalityOfParents();
-            iParent++) {
-          bayesNet.m_Distributions[iAttribute][iParent] =
-              new DiscreteEstimatorFullBayes(instances.attribute(iAttribute).numValues(), w1, w2,
-                  (DiscreteEstimatorBayes) EmptyNet.m_Distributions[iAttribute][0],
-                  (DiscreteEstimatorBayes) NBNet.m_Distributions[iAttribute][iParent], m_fAlpha);
+        for (int iParent = 0; iParent < bayesNet.getParentSet(iAttribute)
+          .getCardinalityOfParents(); iParent++) {
+          bayesNet.m_Distributions[iAttribute][iParent] = new DiscreteEstimatorFullBayes(
+            instances.attribute(iAttribute).numValues(),
+            w1,
+            w2,
+            (DiscreteEstimatorBayes) EmptyNet.m_Distributions[iAttribute][0],
+            (DiscreteEstimatorBayes) NBNet.m_Distributions[iAttribute][iParent],
+            m_fAlpha);
         }
       }
     }
@@ -187,48 +200,43 @@ public class BMAEstimator extends SimpleEstimator {
 
   /**
    * Updates the classifier with the given instance.
-   *
+   * 
    * @param bayesNet the bayes net to use
    * @param instance the new training instance to include in the model
    * @throws Exception if the instance could not be incorporated in the model.
    */
-  @Override public void updateClassifier(BayesNet bayesNet, Instance instance) throws Exception {
+  @Override
+  public void updateClassifier(BayesNet bayesNet, Instance instance)
+    throws Exception {
     throw new Exception("updateClassifier does not apply to BMA estimator");
   } // updateClassifier
 
   /**
    * initCPTs reserves space for CPTs and set all counts to zero
-   *
+   * 
    * @param bayesNet the bayes net to use
    * @throws Exception if something goes wrong
    */
-  @Override public void initCPTs(BayesNet bayesNet) throws Exception {
+  @Override
+  public void initCPTs(BayesNet bayesNet) throws Exception {
     // Reserve space for CPTs
     int nMaxParentCardinality = 1;
 
     for (int iAttribute = 0; iAttribute < bayesNet.m_Instances.numAttributes(); iAttribute++) {
       if (bayesNet.getParentSet(iAttribute).getCardinalityOfParents() > nMaxParentCardinality) {
-        nMaxParentCardinality = bayesNet.getParentSet(iAttribute).getCardinalityOfParents();
+        nMaxParentCardinality = bayesNet.getParentSet(iAttribute)
+          .getCardinalityOfParents();
       }
     }
 
     // Reserve plenty of memory
-    bayesNet.m_Distributions =
-        new Estimator[bayesNet.m_Instances.numAttributes()][nMaxParentCardinality];
+    bayesNet.m_Distributions = new Estimator[bayesNet.m_Instances
+      .numAttributes()][nMaxParentCardinality];
   } // initCPTs
 
   /**
-   * Returns the revision string.
-   *
-   * @return the revision
-   */
-  @Override public String getRevision() {
-    return RevisionUtils.extract("$Revision: 10154 $");
-  }
-
-  /**
    * Returns whether K2 prior is used
-   *
+   * 
    * @return true if K2 prior is used
    */
   public boolean isUseK2Prior() {
@@ -236,57 +244,55 @@ public class BMAEstimator extends SimpleEstimator {
   }
 
   /**
-   * Returns an enumeration describing the available options
-   *
-   * @return an enumeration of all the available options
+   * Sets the UseK2Prior.
+   * 
+   * @param bUseK2Prior The bUseK2Prior to set
    */
-  @Override public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(1);
-
-    newVector.addElement(new Option("\tWhether to use K2 prior.\n", "k2", 0, "-k2"));
-
-    newVector.addAll(Collections.list(super.listOptions()));
-
-    return newVector.elements();
-  } // listOptions  /**
-
-  *
-  Sets the
-  UseK2Prior.
-  *
-      *
-  @param bUseK2Prior The
-  bUseK2Prior to
-  set
-  */
-
   public void setUseK2Prior(boolean bUseK2Prior) {
     m_bUseK2Prior = bUseK2Prior;
   }
 
   /**
+   * Returns an enumeration describing the available options
+   * 
+   * @return an enumeration of all the available options
+   */
+  @Override
+  public Enumeration<Option> listOptions() {
+    Vector<Option> newVector = new Vector<Option>(1);
+
+    newVector.addElement(new Option("\tWhether to use K2 prior.\n", "k2", 0,
+      "-k2"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
+    return newVector.elements();
+  } // listOptions
+
+  /**
    * Parses a given list of options.
    * <p/>
-   *
+   * 
    * <!-- options-start --> Valid options are:
    * <p/>
-   *
+   * 
    * <pre>
    * -k2
    *  Whether to use K2 prior.
    * </pre>
-   *
+   * 
    * <pre>
    * -A &lt;alpha&gt;
    *  Initial count (alpha)
    * </pre>
-   *
+   * 
    * <!-- options-end -->
-   *
+   * 
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
-  @Override public void setOptions(String[] options) throws Exception {
+  @Override
+  public void setOptions(String[] options) throws Exception {
     setUseK2Prior(Utils.getFlag("k2", options));
 
     super.setOptions(options);
@@ -294,10 +300,11 @@ public class BMAEstimator extends SimpleEstimator {
 
   /**
    * Gets the current settings of the classifier.
-   *
+   * 
    * @return an array of strings suitable for passing to setOptions
    */
-  @Override public String[] getOptions() {
+  @Override
+  public String[] getOptions() {
 
     Vector<String> options = new Vector<String>();
 
@@ -309,4 +316,14 @@ public class BMAEstimator extends SimpleEstimator {
 
     return options.toArray(new String[0]);
   } // getOptions
+
+  /**
+   * Returns the revision string.
+   * 
+   * @return the revision
+   */
+  @Override
+  public String getRevision() {
+    return RevisionUtils.extract("$Revision: 10154 $");
+  }
 } // class BMAEstimator

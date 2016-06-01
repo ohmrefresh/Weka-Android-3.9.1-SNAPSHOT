@@ -197,30 +197,7 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
     m_Cache = null;
   } // search  /**
 
-  *
-  Returns an
-  instance of
-  a TechnicalInformation
-  object,
-  containing detailed
-  *
-  information about
-  the technical
-  background of
-  this class,e.g.,paper
-  *
-  reference or
-  book this
 
-  class is based on
-
-  .
-      *
-      *@return
-  the technical
-  information about
-  this class
-  */
 
   @Override public TechnicalInformation getTechnicalInformation() {
     TechnicalInformation result;
@@ -308,10 +285,6 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
     return "Sets the number of steps to be performed.";
   } // runsTipText  /**
 
-  *@return
-  number of
-  runs
-  */
 
   public int getRuns() {
     return m_nRuns;
@@ -324,17 +297,7 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
     return "Sets the length of the tabu list.";
   } // tabuListTipText  /**
 
-  *
-  Sets the
-  number of
-  runs
-  *
-      *
-  @param nRuns The
-  number of
-  runs to
-  set
-  */
+
 
   public void setRuns(int nRuns) {
     m_nRuns = nRuns;

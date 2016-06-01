@@ -248,8 +248,6 @@ public class SimulatedAnnealing extends LocalScoreSearchAlgorithm
         + getTechnicalInformation().toString();
   } // globalInfo  /**
 
-  *@return double
-  */
 
   public double getDelta() {
     return m_fDelta;
@@ -291,8 +289,6 @@ public class SimulatedAnnealing extends LocalScoreSearchAlgorithm
         + "search space is accepted. The higher the temperature, the higher the probability of acceptance.";
   } // TStartTipText  /**
 
-  *@return int
-  */
 
   public int getRuns() {
     return m_nRuns;
@@ -305,15 +301,6 @@ public class SimulatedAnnealing extends LocalScoreSearchAlgorithm
     return "Sets the number of iterations to be performed by the simulated annealing search.";
   } // runsTipText  /**
 
-  *
-  Sets the
-  m_fDelta.
-  *
-      *
-  @param fDelta The
-  m_fDelta to
-  set
-  */
 
   public void setDelta(double fDelta) {
     m_fDelta = fDelta;
@@ -327,15 +314,6 @@ public class SimulatedAnnealing extends LocalScoreSearchAlgorithm
         + "steps in the wrong direction in the search space) is decreased in each iteration.";
   } // deltaTipText  /**
 
-  *
-  Sets the
-  m_fTStart.
-  *
-      *
-  @param fTStart The
-  m_fTStart to
-  set
-  */
 
   public void setTStart(double fTStart) {
     m_fTStart = fTStart;
@@ -349,15 +327,7 @@ public class SimulatedAnnealing extends LocalScoreSearchAlgorithm
         + " Setting the seed allows replicability of experiments.";
   } // seedTipText  /**
 
-  *
-  Sets the
-  m_nRuns.
-  *
-      *
-  @param nRuns The
-  m_nRuns to
-  set
-  */
+
 
   public void setRuns(int nRuns) {
     m_nRuns = nRuns;

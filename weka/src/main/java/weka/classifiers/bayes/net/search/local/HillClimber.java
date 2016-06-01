@@ -438,93 +438,6 @@ public class HillClimber extends LocalScoreSearchAlgorithm {
         + "climber also considers arrows part of the naive Bayes structure for deletion.";
   } // globalInfo  /**
 
-  *
-  Parses a
-  given list
-  of options
-  .
-      *<p/>
-      *
-      *<!--options-start-->
-  Valid options
-  are:
-      *<p/>
-      *
-      *<pre>
-  *-P&lt;
-  nr of
-  parents&gt;
-  *
-  Maximum number
-  of parents
-  *</pre>
-      *
-      *<pre>
-  *-R
-  *
-  Use arc
-  reversal operation
-  .
-      *(default false)
-      *</pre>
-      *
-      *<pre>
-  *-N
-  *
-  Initial structure
-
-  is empty(instead of Naive Bayes)
-
-  *</pre>
-      *
-      *<pre>
-  *-mbc
-  *
-  Applies a
-  Markov Blanket
-  correction to
-  the network
-  structure,
-      *
-  after a
-  network structure
-  is learned
-  .
-  This ensures
-  that all
-  *
-  nodes in
-  the network
-  are part
-  of the
-  Markov blanket
-  of the
-  *
-  classifier node
-  .
-      *</pre>
-      *
-      *<pre>
-  *-S[BAYES|MDL|ENTROPY|AIC|CROSS_CLASSIC|CROSS_BAYES]
-      *
-
-  Score type(BAYES, BDeu, MDL, ENTROPY and AIC)
-
-  *</pre>
-      *
-      *<!--options-end-->
-      *
-      *
-  @param options the
-  list of
-  options as
-  an array
-  of strings
-  *@throws Exception if
-  an option
-  is not
-  supported
-  */
 
   @Override public void setOptions(String[] options) throws Exception {
     setUseArcReversal(Utils.getFlag('R', options));
@@ -550,20 +463,7 @@ public class HillClimber extends LocalScoreSearchAlgorithm {
     return "When set to true, the arc reversal operation is used in the search.";
   } // useArcReversalTipText  /**
 
-  *
-  Gets the
-  current settings
-  of the
-  search algorithm
-  .
-      *
-      *@return
-  an array
-  of strings
-  suitable for
-  passing to
-  setOptions
-  */
+
 
   @Override public String[] getOptions() {
 
@@ -650,18 +550,7 @@ public class HillClimber extends LocalScoreSearchAlgorithm {
     }
   } // class Operation  /**
 
-  *
-  Sets whether
-  to init
-  as naive
-  bayes
-  *
-      *
-  @param bInitAsNaiveBayes whether
-  to init
-  as naive
-  bayes
-  */
+
 
   public void setInitAsNaiveBayes(boolean bInitAsNaiveBayes) {
     m_bInitAsNaiveBayes = bInitAsNaiveBayes;
@@ -732,17 +621,6 @@ public class HillClimber extends LocalScoreSearchAlgorithm {
     }
   } // class Cache  /**
 
-  *
-  Gets whether
-  to init
-  as naive
-  bayes
-  *
-      *@return
-  whether to
-  init as
-  naive bayes
-  */
 
   public boolean getInitAsNaiveBayes() {
     return m_bInitAsNaiveBayes;

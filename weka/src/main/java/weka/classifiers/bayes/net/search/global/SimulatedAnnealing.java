@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
+
 import weka.classifiers.bayes.BayesNet;
 import weka.core.Instances;
 import weka.core.Option;
@@ -46,9 +47,9 @@ import weka.core.Utils;
  * Inference. Utrecht, Netherlands.
  * <p/>
  * <!-- globalinfo-end -->
- *
+ * 
  * <!-- technical-bibtex-start --> BibTeX:
- *
+ * 
  * <pre>
  * &#64;phdthesis{Bouckaert1995,
  *    address = {Utrecht, Netherlands},
@@ -60,56 +61,56 @@ import weka.core.Utils;
  * </pre>
  * <p/>
  * <!-- technical-bibtex-end -->
- *
+ * 
  * <!-- options-start --> Valid options are:
  * <p/>
- *
+ * 
  * <pre>
  * -A &lt;float&gt;
  *  Start temperature
  * </pre>
- *
+ * 
  * <pre>
  * -U &lt;integer&gt;
  *  Number of runs
  * </pre>
- *
+ * 
  * <pre>
  * -D &lt;float&gt;
  *  Delta temperature
  * </pre>
- *
+ * 
  * <pre>
  * -R &lt;seed&gt;
  *  Random number seed
  * </pre>
- *
+ * 
  * <pre>
  * -mbc
- *  Applies a Markov Blanket correction to the network structure,
- *  after a network structure is learned. This ensures that all
- *  nodes in the network are part of the Markov blanket of the
+ *  Applies a Markov Blanket correction to the network structure, 
+ *  after a network structure is learned. This ensures that all 
+ *  nodes in the network are part of the Markov blanket of the 
  *  classifier node.
  * </pre>
- *
+ * 
  * <pre>
  * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
  *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
  * </pre>
- *
+ * 
  * <pre>
  * -Q
  *  Use probabilistic or 0/1 scoring.
  *  (default probabilistic scoring)
  * </pre>
- *
+ * 
  * <!-- options-end -->
- *
+ * 
  * @author Remco Bouckaert (rrb@xm.co.nz)
  * @version $Revision: 11267 $
  */
-public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
-    implements TechnicalInformationHandler {
+public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm implements
+  TechnicalInformationHandler {
 
   /** for serialization */
   static final long serialVersionUID = -5482721887881010916L;
@@ -133,11 +134,35 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
   Random m_random;
 
   /**
+   * Returns an instance of a TechnicalInformation object, containing detailed
+   * information about the technical background of this class, e.g., paper
+   * reference or book this class is based on.
+   * 
+   * @return the technical information about this class
+   */
+  @Override
+  public TechnicalInformation getTechnicalInformation() {
+    TechnicalInformation result;
+
+    result = new TechnicalInformation(Type.PHDTHESIS);
+    result.setValue(Field.AUTHOR, "R.R. Bouckaert");
+    result.setValue(Field.YEAR, "1995");
+    result.setValue(Field.TITLE,
+      "Bayesian Belief Networks: from Construction to Inference");
+    result.setValue(Field.INSTITUTION, "University of Utrecht");
+    result.setValue(Field.ADDRESS, "Utrecht, Netherlands");
+
+    return result;
+  }
+
+  /**
+   * 
    * @param bayesNet the bayes net to use
    * @param instances the data to use
    * @throws Exception if something goes wrong
    */
-  @Override public void search(BayesNet bayesNet, Instances instances) throws Exception {
+  @Override
+  public void search(BayesNet bayesNet, Instances instances) throws Exception {
     m_random = new Random(m_nSeed);
 
     // determine base scores
@@ -169,8 +194,9 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
           fDeltaScore = fScore - fCurrentScore;
           // System.out.println("Try delete " + iTailNode + "->" + iHeadNode +
           // " dScore = " + fDeltaScore);
-          if (fTemp * Math.log((Math.abs(m_random.nextInt()) % 10000) / 10000.0 + 1e-100)
-              < fDeltaScore) {
+          if (fTemp
+            * Math
+              .log((Math.abs(m_random.nextInt()) % 10000) / 10000.0 + 1e-100) < fDeltaScore) {
             // System.out.println("success!!!");
             fCurrentScore = fScore;
           } else {
@@ -185,8 +211,9 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
             fDeltaScore = fScore - fCurrentScore;
             // System.out.println("Try add " + iTailNode + "->" + iHeadNode +
             // " dScore = " + fDeltaScore);
-            if (fTemp * Math.log((Math.abs(m_random.nextInt()) % 10000) / 10000.0 + 1e-100)
-                < fDeltaScore) {
+            if (fTemp
+              * Math
+                .log((Math.abs(m_random.nextInt()) % 10000) / 10000.0 + 1e-100) < fDeltaScore) {
               // System.out.println("success!!!");
               bayesNet.getParentSet(iHeadNode).addParent(iTailNode, instances);
               fCurrentScore = fScore;
@@ -205,7 +232,7 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
 
   /**
    * CopyParentSets copies parent sets of source to dest BayesNet
-   *
+   * 
    * @param dest destination network
    * @param source source network
    */
@@ -218,60 +245,10 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
   } // CopyParentSets
 
   /**
-   * Returns an enumeration describing the available options.
-   *
-   * @return an enumeration of all the available options.
+   * @return double
    */
-  @Override public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(4);
-
-    newVector.addElement(new Option("\tStart temperature", "A", 1, "-A <float>"));
-    newVector.addElement(new Option("\tNumber of runs", "U", 1, "-U <integer>"));
-    newVector.addElement(new Option("\tDelta temperature", "D", 1, "-D <float>"));
-    newVector.addElement(new Option("\tRandom number seed", "R", 1, "-R <seed>"));
-
-    newVector.addAll(Collections.list(super.listOptions()));
-
-    return newVector.elements();
-  }
-
-  /**
-   * This will return a string describing the classifier.
-   *
-   * @return The string.
-   */
-  @Override public String globalInfo() {
-    return "This Bayes Network learning algorithm uses the general purpose search method "
-        + "of simulated annealing to find a well scoring network structure.\n\n"
-        + "For more information see:\n\n"
-        + getTechnicalInformation().toString();
-  } // globalInfo  /**
-
-  *@return double
-  */
-
   public double getDelta() {
     return m_fDelta;
-  }
-
-  /**
-   * Returns an instance of a TechnicalInformation object, containing detailed
-   * information about the technical background of this class, e.g., paper
-   * reference or book this class is based on.
-   *
-   * @return the technical information about this class
-   */
-  @Override public TechnicalInformation getTechnicalInformation() {
-    TechnicalInformation result;
-
-    result = new TechnicalInformation(Type.PHDTHESIS);
-    result.setValue(Field.AUTHOR, "R.R. Bouckaert");
-    result.setValue(Field.YEAR, "1995");
-    result.setValue(Field.TITLE, "Bayesian Belief Networks: from Construction to Inference");
-    result.setValue(Field.INSTITUTION, "University of Utrecht");
-    result.setValue(Field.ADDRESS, "Utrecht, Netherlands");
-
-    return result;
   }
 
   /**
@@ -282,82 +259,35 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
   }
 
   /**
-   * @return a string to describe the TStart option.
+   * @return int
    */
-  public String TStartTipText() {
-    return "Sets the start temperature of the simulated annealing search. "
-        + "The start temperature determines the probability that a step in the 'wrong' direction in the "
-        + "search space is accepted. The higher the temperature, the higher the probability of acceptance.";
-  } // TStartTipText  /**
-
-  *@return int
-  */
-
   public int getRuns() {
     return m_nRuns;
   }
 
   /**
-   * @return a string to describe the Runs option.
+   * Sets the m_fDelta.
+   * 
+   * @param fDelta The m_fDelta to set
    */
-  public String runsTipText() {
-    return "Sets the number of iterations to be performed by the simulated annealing search.";
-  } // runsTipText  /**
-
-  *
-  Sets the
-  m_fDelta.
-  *
-      *
-  @param fDelta The
-  m_fDelta to
-  set
-  */
-
   public void setDelta(double fDelta) {
     m_fDelta = fDelta;
   }
 
   /**
-   * @return a string to describe the Delta option.
+   * Sets the m_fTStart.
+   * 
+   * @param fTStart The m_fTStart to set
    */
-  public String deltaTipText() {
-    return "Sets the factor with which the temperature (and thus the acceptance probability of "
-        + "steps in the wrong direction in the search space) is decreased in each iteration.";
-  } // deltaTipText  /**
-
-  *
-  Sets the
-  m_fTStart.
-  *
-      *
-  @param fTStart The
-  m_fTStart to
-  set
-  */
-
   public void setTStart(double fTStart) {
     m_fTStart = fTStart;
   }
 
   /**
-   * @return a string to describe the Seed option.
+   * Sets the m_nRuns.
+   * 
+   * @param nRuns The m_nRuns to set
    */
-  public String seedTipText() {
-    return "Initialization value for random number generator."
-        + " Setting the seed allows replicability of experiments.";
-  } // seedTipText  /**
-
-  *
-  Sets the
-  m_nRuns.
-  *
-      *
-  @param nRuns The
-  m_nRuns to
-  set
-  */
-
   public void setRuns(int nRuns) {
     m_nRuns = nRuns;
   }
@@ -371,7 +301,7 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
 
   /**
    * Sets the random number seed
-   *
+   * 
    * @param nSeed The number of the seed to set
    */
   public void setSeed(int nSeed) {
@@ -379,57 +309,81 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
   } // setSeed
 
   /**
+   * Returns an enumeration describing the available options.
+   * 
+   * @return an enumeration of all the available options.
+   */
+  @Override
+  public Enumeration<Option> listOptions() {
+    Vector<Option> newVector = new Vector<Option>(4);
+
+    newVector
+      .addElement(new Option("\tStart temperature", "A", 1, "-A <float>"));
+    newVector
+      .addElement(new Option("\tNumber of runs", "U", 1, "-U <integer>"));
+    newVector
+      .addElement(new Option("\tDelta temperature", "D", 1, "-D <float>"));
+    newVector
+      .addElement(new Option("\tRandom number seed", "R", 1, "-R <seed>"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
+    return newVector.elements();
+  }
+
+  /**
    * Parses a given list of options.
    * <p/>
-   *
+   * 
    * <!-- options-start --> Valid options are:
    * <p/>
-   *
+   * 
    * <pre>
    * -A &lt;float&gt;
    *  Start temperature
    * </pre>
-   *
+   * 
    * <pre>
    * -U &lt;integer&gt;
    *  Number of runs
    * </pre>
-   *
+   * 
    * <pre>
    * -D &lt;float&gt;
    *  Delta temperature
    * </pre>
-   *
+   * 
    * <pre>
    * -R &lt;seed&gt;
    *  Random number seed
    * </pre>
-   *
+   * 
    * <pre>
    * -mbc
-   *  Applies a Markov Blanket correction to the network structure,
-   *  after a network structure is learned. This ensures that all
-   *  nodes in the network are part of the Markov blanket of the
+   *  Applies a Markov Blanket correction to the network structure, 
+   *  after a network structure is learned. This ensures that all 
+   *  nodes in the network are part of the Markov blanket of the 
    *  classifier node.
    * </pre>
-   *
+   * 
    * <pre>
    * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
    *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
    * </pre>
-   *
+   * 
    * <pre>
    * -Q
    *  Use probabilistic or 0/1 scoring.
    *  (default probabilistic scoring)
    * </pre>
-   *
+   * 
    * <!-- options-end -->
-   *
+   * 
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
-  @Override public void setOptions(String[] options) throws Exception {
+  @Override
+  public void setOptions(String[] options) throws Exception {
     String sTStart = Utils.getOption('A', options);
     if (sTStart.length() != 0) {
       setTStart(Double.parseDouble(sTStart));
@@ -451,10 +405,11 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
 
   /**
    * Gets the current settings of the search algorithm.
-   *
+   * 
    * @return an array of strings suitable for passing to setOptions
    */
-  @Override public String[] getOptions() {
+  @Override
+  public String[] getOptions() {
 
     Vector<String> options = new Vector<String>();
 
@@ -476,11 +431,56 @@ public class SimulatedAnnealing extends GlobalScoreSearchAlgorithm
   }
 
   /**
+   * This will return a string describing the classifier.
+   * 
+   * @return The string.
+   */
+  @Override
+  public String globalInfo() {
+    return "This Bayes Network learning algorithm uses the general purpose search method "
+      + "of simulated annealing to find a well scoring network structure.\n\n"
+      + "For more information see:\n\n" + getTechnicalInformation().toString();
+  } // globalInfo
+
+  /**
+   * @return a string to describe the TStart option.
+   */
+  public String TStartTipText() {
+    return "Sets the start temperature of the simulated annealing search. "
+      + "The start temperature determines the probability that a step in the 'wrong' direction in the "
+      + "search space is accepted. The higher the temperature, the higher the probability of acceptance.";
+  } // TStartTipText
+
+  /**
+   * @return a string to describe the Runs option.
+   */
+  public String runsTipText() {
+    return "Sets the number of iterations to be performed by the simulated annealing search.";
+  } // runsTipText
+
+  /**
+   * @return a string to describe the Delta option.
+   */
+  public String deltaTipText() {
+    return "Sets the factor with which the temperature (and thus the acceptance probability of "
+      + "steps in the wrong direction in the search space) is decreased in each iteration.";
+  } // deltaTipText
+
+  /**
+   * @return a string to describe the Seed option.
+   */
+  public String seedTipText() {
+    return "Initialization value for random number generator."
+      + " Setting the seed allows replicability of experiments.";
+  } // seedTipText
+
+  /**
    * Returns the revision string.
-   *
+   * 
    * @return the revision
    */
-  @Override public String getRevision() {
+  @Override
+  public String getRevision() {
     return RevisionUtils.extract("$Revision: 11267 $");
   }
 } // SimulatedAnnealing

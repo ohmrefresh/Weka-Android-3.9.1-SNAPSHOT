@@ -24,6 +24,7 @@ package weka.classifiers.bayes.net.search.global;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
+
 import weka.classifiers.bayes.BayesNet;
 import weka.core.Instances;
 import weka.core.Option;
@@ -48,9 +49,9 @@ import weka.core.Utils;
  * Inference. Utrecht, Netherlands.
  * <p/>
  * <!-- globalinfo-end -->
- *
+ * 
  * <!-- technical-bibtex-start --> BibTeX:
- *
+ * 
  * <pre>
  * &#64;phdthesis{Bouckaert1995,
  *    address = {Utrecht, Netherlands},
@@ -62,72 +63,73 @@ import weka.core.Utils;
  * </pre>
  * <p/>
  * <!-- technical-bibtex-end -->
- *
+ * 
  * <!-- options-start --> Valid options are:
  * <p/>
- *
+ * 
  * <pre>
  * -L &lt;integer&gt;
  *  Tabu list length
  * </pre>
- *
+ * 
  * <pre>
  * -U &lt;integer&gt;
  *  Number of runs
  * </pre>
- *
+ * 
  * <pre>
  * -P &lt;nr of parents&gt;
  *  Maximum number of parents
  * </pre>
- *
+ * 
  * <pre>
  * -R
  *  Use arc reversal operation.
  *  (default false)
  * </pre>
- *
+ * 
  * <pre>
  * -P &lt;nr of parents&gt;
  *  Maximum number of parents
  * </pre>
- *
+ * 
  * <pre>
  * -R
  *  Use arc reversal operation.
  *  (default false)
  * </pre>
- *
+ * 
  * <pre>
  * -N
  *  Initial structure is empty (instead of Naive Bayes)
  * </pre>
- *
+ * 
  * <pre>
  * -mbc
- *  Applies a Markov Blanket correction to the network structure,
- *  after a network structure is learned. This ensures that all
- *  nodes in the network are part of the Markov blanket of the
+ *  Applies a Markov Blanket correction to the network structure, 
+ *  after a network structure is learned. This ensures that all 
+ *  nodes in the network are part of the Markov blanket of the 
  *  classifier node.
  * </pre>
- *
+ * 
  * <pre>
  * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
  *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
  * </pre>
- *
+ * 
  * <pre>
  * -Q
  *  Use probabilistic or 0/1 scoring.
  *  (default probabilistic scoring)
  * </pre>
- *
+ * 
  * <!-- options-end -->
- *
+ * 
  * @author Remco Bouckaert (rrb@xm.co.nz)
  * @version $Revision: 10154 $
  */
-public class TabuSearch extends HillClimber implements TechnicalInformationHandler {
+public class TabuSearch extends HillClimber implements
+  TechnicalInformationHandler {
 
   /** for serialization */
   static final long serialVersionUID = 1176705618756672292L;
@@ -142,14 +144,38 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
   Operation[] m_oTabuList = null;
 
   /**
+   * Returns an instance of a TechnicalInformation object, containing detailed
+   * information about the technical background of this class, e.g., paper
+   * reference or book this class is based on.
+   * 
+   * @return the technical information about this class
+   */
+  @Override
+  public TechnicalInformation getTechnicalInformation() {
+    TechnicalInformation result;
+
+    result = new TechnicalInformation(Type.PHDTHESIS);
+    result.setValue(Field.AUTHOR, "R.R. Bouckaert");
+    result.setValue(Field.YEAR, "1995");
+    result.setValue(Field.TITLE,
+      "Bayesian Belief Networks: from Construction to Inference");
+    result.setValue(Field.INSTITUTION, "University of Utrecht");
+    result.setValue(Field.ADDRESS, "Utrecht, Netherlands");
+
+    return result;
+  }
+
+  /**
    * search determines the network structure/graph of the network with the Tabu
    * search algorithm.
-   *
+   * 
    * @param bayesNet the network to use
    * @param instances the instances to use
    * @throws Exception if something goes wrong
    */
-  @Override protected void search(BayesNet bayesNet, Instances instances) throws Exception {
+  @Override
+  protected void search(BayesNet bayesNet, Instances instances)
+    throws Exception {
     m_oTabuList = new Operation[m_nTabuList];
     int iCurrentTabuList = 0;
 
@@ -173,7 +199,8 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
       performOperation(bayesNet, instances, oOperation);
       // sanity check
       if (oOperation == null) {
-        throw new Exception("Panic: could not find any step to make. Tabu list too long?");
+        throw new Exception(
+          "Panic: could not find any step to make. Tabu list too long?");
       }
       // update tabu list
       m_oTabuList[iCurrentTabuList] = oOperation;
@@ -196,49 +223,11 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
 
     // free up memory
     bestBayesNet = null;
-  } // search  /**
-
-  *
-  Returns an
-  instance of
-  a TechnicalInformation
-  object,
-  containing detailed
-  *
-  information about
-  the technical
-  background of
-  this class,e.g.,paper
-  *
-  reference or
-  book this
-
-  class is based on
-
-  .
-      *
-      *@return
-  the technical
-  information about
-  this class
-  */
-
-  @Override public TechnicalInformation getTechnicalInformation() {
-    TechnicalInformation result;
-
-    result = new TechnicalInformation(Type.PHDTHESIS);
-    result.setValue(Field.AUTHOR, "R.R. Bouckaert");
-    result.setValue(Field.YEAR, "1995");
-    result.setValue(Field.TITLE, "Bayesian Belief Networks: from Construction to Inference");
-    result.setValue(Field.INSTITUTION, "University of Utrecht");
-    result.setValue(Field.ADDRESS, "Utrecht, Netherlands");
-
-    return result;
-  }
+  } // search
 
   /**
    * copyParentSets copies parent sets of source to dest BayesNet
-   *
+   * 
    * @param dest destination network
    * @param source source network
    */
@@ -249,6 +238,22 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
       dest.getParentSet(iNode).copy(source.getParentSet(iNode));
     }
   } // CopyParentSets
+
+  /**
+   * check whether the operation is not in the tabu list
+   * 
+   * @param oOperation operation to be checked
+   * @return true if operation is not in the tabu list
+   */
+  @Override
+  boolean isNotTabu(Operation oOperation) {
+    for (int iTabu = 0; iTabu < m_nTabuList; iTabu++) {
+      if (oOperation.equals(m_oTabuList[iTabu])) {
+        return false;
+      }
+    }
+    return true;
+  } // isNotTabu
 
   /**
    * print tabu list for debugging purposes.
@@ -269,74 +274,17 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
   } // printTabuList
 
   /**
-   * check whether the operation is not in the tabu list
-   *
-   * @param oOperation operation to be checked
-   * @return true if operation is not in the tabu list
+   * @return number of runs
    */
-  @Override boolean isNotTabu(Operation oOperation) {
-    for (int iTabu = 0; iTabu < m_nTabuList; iTabu++) {
-      if (oOperation.equals(m_oTabuList[iTabu])) {
-        return false;
-      }
-    }
-    return true;
-  } // isNotTabu
-
-  /**
-   * Returns an enumeration describing the available options.
-   *
-   * @return an enumeration of all the available options.
-   */
-  @Override public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(4);
-
-    newVector.addElement(new Option("\tTabu list length", "L", 1, "-L <integer>"));
-    newVector.addElement(new Option("\tNumber of runs", "U", 1, "-U <integer>"));
-    newVector.addElement(new Option("\tMaximum number of parents", "P", 1, "-P <nr of parents>"));
-    newVector.addElement(
-        new Option("\tUse arc reversal operation.\n\t(default false)", "R", 0, "-R"));
-
-    newVector.addAll(Collections.list(super.listOptions()));
-
-    return newVector.elements();
-  } // listOptions
-
-  /**
-   * @return a string to describe the Runs option.
-   */
-  public String runsTipText() {
-    return "Sets the number of steps to be performed.";
-  } // runsTipText  /**
-
-  *@return
-  number of
-  runs
-  */
-
   public int getRuns() {
     return m_nRuns;
   } // getRuns
 
   /**
-   * @return a string to describe the TabuList option.
+   * Sets the number of runs
+   * 
+   * @param nRuns The number of runs to set
    */
-  public String tabuListTipText() {
-    return "Sets the length of the tabu list.";
-  } // tabuListTipText  /**
-
-  *
-  Sets the
-  number of
-  runs
-  *
-      *
-  @param nRuns The
-  number of
-  runs to
-  set
-  */
-
   public void setRuns(int nRuns) {
     m_nRuns = nRuns;
   } // setRuns
@@ -350,7 +298,7 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
 
   /**
    * Sets the Tabu List length.
-   *
+   * 
    * @param nTabuList The nTabuList to set
    */
   public void setTabuList(int nTabuList) {
@@ -358,74 +306,98 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
   } // setTabuList
 
   /**
+   * Returns an enumeration describing the available options.
+   * 
+   * @return an enumeration of all the available options.
+   */
+  @Override
+  public Enumeration<Option> listOptions() {
+    Vector<Option> newVector = new Vector<Option>(4);
+
+    newVector.addElement(new Option("\tTabu list length", "L", 1,
+      "-L <integer>"));
+    newVector
+      .addElement(new Option("\tNumber of runs", "U", 1, "-U <integer>"));
+    newVector.addElement(new Option("\tMaximum number of parents", "P", 1,
+      "-P <nr of parents>"));
+    newVector.addElement(new Option(
+      "\tUse arc reversal operation.\n\t(default false)", "R", 0, "-R"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
+    return newVector.elements();
+  } // listOptions
+
+  /**
    * Parses a given list of options.
    * <p/>
-   *
+   * 
    * <!-- options-start --> Valid options are:
    * <p/>
-   *
+   * 
    * <pre>
    * -L &lt;integer&gt;
    *  Tabu list length
    * </pre>
-   *
+   * 
    * <pre>
    * -U &lt;integer&gt;
    *  Number of runs
    * </pre>
-   *
+   * 
    * <pre>
    * -P &lt;nr of parents&gt;
    *  Maximum number of parents
    * </pre>
-   *
+   * 
    * <pre>
    * -R
    *  Use arc reversal operation.
    *  (default false)
    * </pre>
-   *
+   * 
    * <pre>
    * -P &lt;nr of parents&gt;
    *  Maximum number of parents
    * </pre>
-   *
+   * 
    * <pre>
    * -R
    *  Use arc reversal operation.
    *  (default false)
    * </pre>
-   *
+   * 
    * <pre>
    * -N
    *  Initial structure is empty (instead of Naive Bayes)
    * </pre>
-   *
+   * 
    * <pre>
    * -mbc
-   *  Applies a Markov Blanket correction to the network structure,
-   *  after a network structure is learned. This ensures that all
-   *  nodes in the network are part of the Markov blanket of the
+   *  Applies a Markov Blanket correction to the network structure, 
+   *  after a network structure is learned. This ensures that all 
+   *  nodes in the network are part of the Markov blanket of the 
    *  classifier node.
    * </pre>
-   *
+   * 
    * <pre>
    * -S [LOO-CV|k-Fold-CV|Cumulative-CV]
    *  Score type (LOO-CV,k-Fold-CV,Cumulative-CV)
    * </pre>
-   *
+   * 
    * <pre>
    * -Q
    *  Use probabilistic or 0/1 scoring.
    *  (default probabilistic scoring)
    * </pre>
-   *
+   * 
    * <!-- options-end -->
-   *
+   * 
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
-  @Override public void setOptions(String[] options) throws Exception {
+  @Override
+  public void setOptions(String[] options) throws Exception {
     String sTabuList = Utils.getOption('L', options);
     if (sTabuList.length() != 0) {
       setTabuList(Integer.parseInt(sTabuList));
@@ -440,10 +412,11 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
 
   /**
    * Gets the current settings of the search algorithm.
-   *
+   * 
    * @return an array of strings suitable for passing to setOptions
    */
-  @Override public String[] getOptions() {
+  @Override
+  public String[] getOptions() {
 
     Vector<String> options = new Vector<String>();
 
@@ -460,25 +433,41 @@ public class TabuSearch extends HillClimber implements TechnicalInformationHandl
 
   /**
    * This will return a string describing the classifier.
-   *
+   * 
    * @return The string.
    */
-  @Override public String globalInfo() {
+  @Override
+  public String globalInfo() {
     return "This Bayes Network learning algorithm uses tabu search for finding a well scoring "
-        + "Bayes network structure. Tabu search is hill climbing till an optimum is reached. The "
-        + "following step is the least worst possible step. The last X steps are kept in a list and "
-        + "none of the steps in this so called tabu list is considered in taking the next step. "
-        + "The best network found in this traversal is returned.\n\n"
-        + "For more information see:\n\n"
-        + getTechnicalInformation().toString();
+      + "Bayes network structure. Tabu search is hill climbing till an optimum is reached. The "
+      + "following step is the least worst possible step. The last X steps are kept in a list and "
+      + "none of the steps in this so called tabu list is considered in taking the next step. "
+      + "The best network found in this traversal is returned.\n\n"
+      + "For more information see:\n\n" + getTechnicalInformation().toString();
   } // globalInfo
 
   /**
+   * @return a string to describe the Runs option.
+   */
+  public String runsTipText() {
+    return "Sets the number of steps to be performed.";
+  } // runsTipText
+
+  /**
+   * @return a string to describe the TabuList option.
+   */
+  public String tabuListTipText() {
+    return "Sets the length of the tabu list.";
+  } // tabuListTipText
+
+  /**
    * Returns the revision string.
-   *
+   * 
    * @return the revision
    */
-  @Override public String getRevision() {
+  @Override
+  public String getRevision() {
     return RevisionUtils.extract("$Revision: 10154 $");
   }
+
 } // TabuSearch

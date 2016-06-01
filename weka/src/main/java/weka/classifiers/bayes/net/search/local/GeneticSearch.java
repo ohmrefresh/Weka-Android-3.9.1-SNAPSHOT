@@ -21,6 +21,7 @@
 
 package weka.classifiers.bayes.net.search.local;
 
+import android.text.Selection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Random;
@@ -514,16 +515,6 @@ public class GeneticSearch extends LocalScoreSearchAlgorithm {
     return "Sets the size of the population of network structures that is selected each generation.";
   } // populationSizeTipText  /**
 
-  *@return
-  whether Tournament
-
-  Selection(true)or Maximum Sub
-
-  -Population
-  *(false)
-  should be
-  used
-  */
 
   public boolean getUseTournamentSelection() {
     return m_bUseTournamentSelection;
@@ -536,15 +527,7 @@ public class GeneticSearch extends LocalScoreSearchAlgorithm {
     return "Sets the size of the population of descendants that is created each generation.";
   } // descendantPopulationSizeTipText  /**
 
-  *
-  @param bUseTournamentSelection sets
-  whether Tournament
-  Selection or
-  Maximum
-  *Sub-
-  Population should
-  be used
-  */
+
 
   public void setUseTournamentSelection(boolean bUseTournamentSelection) {
     m_bUseTournamentSelection = bUseTournamentSelection;
@@ -578,10 +561,7 @@ public class GeneticSearch extends LocalScoreSearchAlgorithm {
         + "When set to false, the top scoring network structures are selected.";
   } // useTournamentSelectionTipText  /**
 
-  *@return
-  random number
-  seed
-  */
+
 
   public int getSeed() {
     return m_nSeed;
@@ -784,17 +764,6 @@ public class GeneticSearch extends LocalScoreSearchAlgorithm {
     }
   } // class BayesNetRepresentation  /**
 
-  *
-  Sets the
-  random number
-  seed
-  *
-      *
-  @param nSeed The
-  number of
-  the seed
-  to set
-  */
 
   public void setSeed(int nSeed) {
     m_nSeed = nSeed;
