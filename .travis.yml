@@ -18,5 +18,9 @@ before_script:
   - export GRADLE_HOME=$PWD/gradle-2.10
   - export PATH=$GRADLE_HOME/bin:$PATH
   - gradle -v
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - adb wait-for-device
+  - adb shell input keyevent 82 &
 script:
   - gradle build connectedCheck
