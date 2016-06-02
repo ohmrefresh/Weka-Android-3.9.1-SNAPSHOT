@@ -9,7 +9,7 @@ android:
   - build-tools-23.0.2
   - android-23
   - add-on
-  - extra
+  - extra-android-m2repository
   - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
 
 before_script:
