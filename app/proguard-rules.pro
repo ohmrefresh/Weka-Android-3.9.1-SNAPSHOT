@@ -15,3 +15,24 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontnote android.net.http.*
+-dontnote org.apache.commons.codec.**
+-dontnote org.apache.http.**
+
+-optimizationpasses 1
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+-dontwarn com.googlecode.openbeans.**
+-dontwarn java_cup.**
+-dontwarn no.uib.**
+-dontwarn rg.apache.harmony.**
+
+
+-keep class com.googlecode.openbeans.** { *; }
+-keep class no.uib.** { *; }
+-keep class java_cup.** { *; }
+-keep class rg.apache.harmony.**

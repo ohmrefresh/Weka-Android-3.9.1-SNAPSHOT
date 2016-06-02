@@ -3,15 +3,17 @@ apply plugin: 'com.android.library'
 android {
   compileSdkVersion 23
   buildToolsVersion "23.0.2"
-
+  lintOptions{
+    abortOnError false
+  }
   defaultConfig {
-    minSdkVersion 23
+    minSdkVersion 21
     targetSdkVersion 23
+
   }
 }
 
 dependencies {
   compile files('libs/java-cup.jar')
-  compile files('libs/openbeans-1.0.jar')
   compile files('libs/mtj.jar')
 }

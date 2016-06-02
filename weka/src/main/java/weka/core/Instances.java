@@ -2506,4 +2506,38 @@ public class Instances extends AbstractList<Instance> implements Serializable, R
   @Override public String getRevision() {
     return RevisionUtils.extract("$Revision: 12446 $");
   }
+
+  /**
+   * implement Serializable judiciously
+   * @param stream
+   * @throws IOException
+   */
+  private void writeObject(java.io.ObjectOutputStream stream)
+      throws IOException {
+    stream.writeObject(m_Instances);
+    stream.writeUTF(m_RelationName);
+    stream.writeObject(m_Attributes);
+    stream.writeObject(m_NamesToAttributeIndices);
+    stream.writeInt(m_ClassIndex);
+    stream.writeInt(m_Lines);
+
+  }
+
+  /**
+   * implement Serializable judiciously
+   * @param stream
+   * @throws IOException
+   */
+  private void readObject(java.io.ObjectInputStream stream)
+      throws IOException, ClassNotFoundException {
+    m_Instances = (ArrayList<Instance>) stream.readObject();
+    m_RelationName=stream.readUTF();
+    m_Attributes= (ArrayList<Attribute>) stream.readObject();
+    m_NamesToAttributeIndices= (HashMap<String, Integer>)  stream.readObject();
+    m_ClassIndex =stream.readInt();
+    m_Lines =stream.readInt();
+  }
+
+
+
 }

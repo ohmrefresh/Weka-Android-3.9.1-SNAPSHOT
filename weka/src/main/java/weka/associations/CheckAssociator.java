@@ -642,7 +642,7 @@ public class CheckAssociator extends CheckScheme implements RevisionHandler {
    *
    * @return true if the associator handles instance weights
    */
-  protected boolean[] weightedInstancesHandler() {
+  public boolean[] weightedInstancesHandler() {
 
     boolean[] result = new boolean[2];
 
@@ -672,7 +672,7 @@ public class CheckAssociator extends CheckScheme implements RevisionHandler {
    *
    * @return true if the associator handles multi-instance data
    */
-  protected boolean[] multiInstanceHandler() {
+  public boolean[] multiInstanceHandler() {
     boolean[] result = new boolean[2];
 
     print("multi-instance associator...");
@@ -693,7 +693,7 @@ public class CheckAssociator extends CheckScheme implements RevisionHandler {
    *
    * @return index 0 is true if the scheme declares a UID
    */
-  protected boolean[] declaresSerialVersionUID() {
+  public boolean[] declaresSerialVersionUID() {
     boolean[] result = new boolean[2];
 
     print("serialVersionUID...");
@@ -722,7 +722,7 @@ public class CheckAssociator extends CheckScheme implements RevisionHandler {
    * @return index 0 is true if the test was passed, index 1 is true if test was
    * acceptable
    */
-  protected boolean[] canPredict(boolean nominalPredictor, boolean numericPredictor,
+  public boolean[] canPredict(boolean nominalPredictor, boolean numericPredictor,
       boolean stringPredictor, boolean datePredictor, boolean relationalPredictor,
       boolean multiInstance, int classType) {
 
