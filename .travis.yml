@@ -6,11 +6,10 @@ env:
  - ANDROID_ABI=armeabi-v7a
 android:
   components:
-  - tools
-  - platform-tools
   - build-tools-23.0.2
   - android-23
-  - extra-android-m2repository
+  - add-on
+  - extra
   - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
 
 before_script:
