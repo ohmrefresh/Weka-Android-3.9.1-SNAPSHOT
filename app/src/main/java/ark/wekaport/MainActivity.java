@@ -13,11 +13,16 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
-import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.Randomize;
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
       m_Filter.setInputFormat(m_Training);
 
       Instances localInstances = Filter.useFilter(m_Training, m_Filter);
-      J48 m_Classifier = new weka.classifiers.trees.J48();
+      RandomForest m_Classifier = new weka.classifiers.trees.RandomForest();
 
       m_Classifier.buildClassifier(localInstances);
 
@@ -54,6 +59,32 @@ public class MainActivity extends AppCompatActivity {
       Log.e("Result", "================================================");
 
       Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+
+      //Classification Instant
+
+      List<String>  attZone=new ArrayList<>();
+      Attribute attRef1 = new Attribute("ref1");
+      Attribute attRef2 = new Attribute("ref2");
+      Attribute attRef3 = new Attribute("ref3");
+
+      ArrayList<Attribute>  atts=new ArrayList<>();
+      atts.add(attRef1);
+      atts.add(attRef2);
+      atts.add(attRef3);
+      atts.add(new Attribute("zone", attZone));
+
+
+
+      Instances dataUnlabeled = new Instances("TestInstances", atts, 0);
+      Instance iExample = new DenseInstance(3);
+      iExample.setValue(atts.get(0), -22);
+      iExample.setValue(atts.get(1), -33);
+      iExample.setValue(atts.get(2), -33);
+      dataUnlabeled.add(iExample);
+
+      dataUnlabeled.setClassIndex(dataUnlabeled.numAttributes() - 1);
+
+      double[] predict = m_Classifier.distributionForInstance(dataUnlabeled.firstInstance());
 
     } catch (Exception e) {
 
