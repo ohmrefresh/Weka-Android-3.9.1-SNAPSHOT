@@ -19,4 +19,4 @@ before_script:
   - export PATH=$GRADLE_HOME/bin:$PATH
   - gradle -v
 script:
-  - gradle build connectedCheck
+  - gradlew clean build --info --stacktrace
